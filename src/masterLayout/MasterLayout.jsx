@@ -288,6 +288,47 @@ const MasterLayout = ({children}) => {
                                 </li>
                             </ul>
                         </li>
+                        {/* Bulk Negotiation Management */}
+                        <li className='sidebar-menu-group-title'>Bulk Negotiation</li>
+                        <li className='dropdown'>
+                            <Link to='#'>
+                                <Icon icon='mdi:handshake-outline' className='menu-icon'/>
+                                <span>Bulk Negotiation</span>
+                            </Link>
+                            <ul className='sidebar-submenu'>
+                                <li>
+                                    <NavLink to='/negotiation/pending'
+                                             className={(navData) => (navData.isActive ? 'active-page' : '')}>
+                                        <i className='ri-circle-fill circle-icon text-warning-main w-auto'/>
+                                        Pending Requests
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to='/negotiation/all'
+                                             className={(navData) => (navData.isActive ? 'active-page' : '')}>
+                                        <i className='ri-circle-fill circle-icon text-primary-600 w-auto'/> All Negotiations
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to='/negotiation/approved'
+                                             className={(navData) => (navData.isActive ? 'active-page' : '')}>
+                                        <i className='ri-circle-fill circle-icon text-success-main w-auto'/> Approved
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to='/negotiation/counter-offers'
+                                             className={(navData) => (navData.isActive ? 'active-page' : '')}>
+                                        <i className='ri-circle-fill circle-icon text-info-main w-auto'/> Counter Offers
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to='/negotiation/reports'
+                                             className={(navData) => (navData.isActive ? 'active-page' : '')}>
+                                        <i className='ri-circle-fill circle-icon text-purple w-auto'/> Reports & Analytics
+                                    </NavLink>
+                                </li>
+                            </ul>
+                        </li>
 
                         {/* Pricing & Tax */}
                         <li className='sidebar-menu-group-title'>Pricing &amp; Tax</li>

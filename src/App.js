@@ -56,6 +56,7 @@ import SettingsPage from "./pages/settings/SettingsPage";
 
 // Home
 import HomePageThree from "./pages/HomePageThree";
+import BulkNegotiationListPage from "./pages/negotiation/BulkNegotiationListPage";
 
 /**
  * Helper to check authentication
@@ -273,6 +274,16 @@ function App() {
                     </PrivateRoute>
                 }
             />
+            {/* Bulk Negotiation Routes */}
+            <Route
+                path="/negotiation/all"
+                element={
+                    <PrivateRoute>
+                        <BulkNegotiationListPage />
+                    </PrivateRoute>
+                }
+            />
+
             <Route
                 path="/shipping"
                 element={

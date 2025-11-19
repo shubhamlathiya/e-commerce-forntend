@@ -8,8 +8,6 @@ import pricingApi from "../../api/pricingApi";
 import ProductApi from "../../api/productApi";
 import productApi from "../../api/productApi";
 import Select from "react-select";
-import {setFormField} from "../../features/catalog/tagsSlice";
-
 
 const TabButton = ({active, onClick, children}) => (<button
     className={`btn btn-sm ${active ? "btn-primary-600 text-white" : "btn-neutral-400"}`}
