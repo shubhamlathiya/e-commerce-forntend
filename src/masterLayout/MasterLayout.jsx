@@ -173,6 +173,12 @@ const MasterLayout = ({children}) => {
                                     </NavLink>
                                 </li>
                                 <li>
+                                    <NavLink to='/tab-categories'
+                                             className={(navData) => (navData.isActive ? 'active-page' : '')}>
+                                        <i className='ri-circle-fill circle-icon text-info-main w-auto'/> Tab Categories
+                                    </NavLink>
+                                </li>
+                                <li>
                                     <NavLink to='/brands'
                                              className={(navData) => (navData.isActive ? 'active-page' : '')}>
                                         <i className='ri-circle-fill circle-icon text-success-main w-auto'/> Brands

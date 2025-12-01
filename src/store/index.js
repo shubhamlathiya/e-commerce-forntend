@@ -14,6 +14,7 @@ import comboReducer from "../features/offersAndDiscounts/comboSlice";
 import couponsReducer from "../features/offersAndDiscounts/couponsSlice";
 import flashSalesReducer from "../features/offersAndDiscounts/flashSalesSlice";
 import loyaltyReducer from "../features/loyalty/loyaltySlice";
+import tabCategoriesReducer from "../features/catalog/tabCategoriesSlice";
 
 export const store = configureStore({
     reducer: {
@@ -32,6 +33,7 @@ export const store = configureStore({
         coupons: couponsReducer,
         flashSales: flashSalesReducer,
         loyalty: loyaltyReducer,
+        tabCategories: tabCategoriesReducer,
 
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

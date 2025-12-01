@@ -26,6 +26,9 @@ import ProductPage from "./pages/catalog/ProductPage";
 import ProductDetailsPage from "./pages/catalog/ProductDetailsPage";
 import ProductVariantsPage from "./pages/catalog/ProductVariantsPage";
 import StockLogsPage from "./pages/catalog/StockLogsPage";
+import TabCategoriesPage from "./pages/catalog/TabCategoriesPage";
+import CreateTabCategoryPage from "./pages/catalog/CreateTabCategoryPage";
+import EditTabCategoryPage from "./pages/catalog/EditTabCategoryPage";
 
 // Orders Pages
 import OrdersListPage from "./pages/orders/OrdersListPage";
@@ -191,6 +194,30 @@ function App() {
                 element={
                     <PrivateRoute>
                         <CategoriesPage />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/tab-categories"
+                element={
+                    <PrivateRoute>
+                        <TabCategoriesPage />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/tab-categories/create"
+                element={
+                    <PrivateRoute>
+                        <CreateTabCategoryPage />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/tab-categories/:id/edit"
+                element={
+                    <PrivateRoute>
+                        <EditTabCategoryPage />
                     </PrivateRoute>
                 }
             />

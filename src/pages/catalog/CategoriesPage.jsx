@@ -18,6 +18,7 @@ import {
     setFormField,
     resetForm,
 } from "../../features/catalog/categoriesSlice";
+import {getTabCategories} from "../../api/catalogApi";
 
 // Helper: build slug from name
 const toSlug = (str = "") => str
@@ -64,7 +65,8 @@ const CategoriesPage = () => {
     const [userEditedSlug, setUserEditedSlug] = useState(false);
     const [iconFile, setIconFile] = useState(null);
     const [imageFile, setImageFile] = useState(null);
-
+    const [bannerFile, setBannerFile] = useState(null);
+    const [tabOptions, setTabOptions] = useState([]);
     const parentOptions = useMemo(() => [{
         id: "", label: "None"
     }, ...flattenTreeWithPaths(categoryTree)], [categoryTree]);
@@ -72,6 +74,16 @@ const CategoriesPage = () => {
     useEffect(() => {
         dispatch(getAllCategories({page, limit}));
         dispatch(getCategoryTree());
+        const loadTabs = async () => {
+            try {
+                const res = await getTabCategories();
+                const tabs = Array.isArray(res?.data) ? res.data : [];
+                setTabOptions(tabs);
+            } catch (err) {
+                setTabOptions([]);
+            }
+        };
+        loadTabs();
     }, [dispatch, page, limit]);
 
     useEffect(() => {
@@ -84,7 +96,7 @@ const CategoriesPage = () => {
 
     const handleSubmit = async (e) => {
         e?.preventDefault?.();
-        const hasFiles = !!iconFile || !!imageFile;
+        const hasFiles = !!iconFile || !!imageFile || !!bannerFile;
         let payload;
         if (hasFiles) {
             payload = new FormData();
@@ -93,6 +105,8 @@ const CategoriesPage = () => {
             if (form.parentId) payload.append("parentId", form.parentId);
             payload.append("status", (!!form.status).toString());
             payload.append("isFeatured", (!!form.isFeatured).toString());
+            payload.append("isOnSale", (!!form.isOnSale).toString());
+            if ((form.tabCategory || "").trim()) payload.append("tabCategory", (form.tabCategory || "").trim());
             payload.append("sortOrder", String(Number(form.sortOrder) || 0));
             if ((form.metaTitle || "").trim()) payload.append("metaTitle", (form.metaTitle || "").trim());
             if ((form.metaDescription || "").trim()) payload.append("metaDescription", (form.metaDescription || "").trim());
@@ -100,6 +114,8 @@ const CategoriesPage = () => {
             else if ((form.icon || "").trim()) payload.append("icon", (form.icon || "").trim());
             if (imageFile) payload.append("image", imageFile);
             else if ((form.image || "").trim()) payload.append("image", (form.image || "").trim());
+            if (bannerFile) payload.append("saleBanner", bannerFile);
+            else if ((form.saleBanner || "").trim()) payload.append("saleBanner", (form.saleBanner || "").trim());
         } else {
             payload = {
                 name: (form.name || "").trim(),
@@ -107,6 +123,9 @@ const CategoriesPage = () => {
                 parentId: form.parentId || undefined,
                 icon: (form.icon || "").trim() || undefined,
                 image: (form.image || "").trim() || undefined,
+                isOnSale: !!form.isOnSale,
+                saleBanner: (form.saleBanner || "").trim() || undefined,
+                tabCategory: (form.tabCategory || "").trim() || undefined,
                 status: !!form.status,
                 isFeatured: !!form.isFeatured,
                 sortOrder: Number(form.sortOrder) || 0,
@@ -131,6 +150,7 @@ const CategoriesPage = () => {
             setUserEditedSlug(false);
             setIconFile(null);
             setImageFile(null);
+            setBannerFile(null);
         } catch (err) {
             toast.error("❌ Error saving category");
         }
@@ -304,7 +324,7 @@ const CategoriesPage = () => {
                 {activeTab === "list" ? (<>
                     <TableDataLayer
                         title="Category List"
-                        headers={["#", "Icon", "Image", "Name", "Slug", "Parent", "Status", "Featured"]}
+                        headers={["#", "Icon", "Image", "Name", "Slug", "Parent", "Status", "Featured", "On Sale", "Tab", "Banner"]}
                         data={items.map((c, i) => {
                             const statusBadge = c.status
                                 ? `<span class='bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm'>Active</span>`
@@ -328,6 +348,15 @@ const CategoriesPage = () => {
                                 />
                             );
 
+                            const bannerEl = (
+                                <img
+                                    src={c.saleBanner ? resolveImageUrl(c.saleBanner) : placeholder}
+                                    alt="Banner"
+                                    style={{ width: 80, height: 40, objectFit: "cover", borderRadius: 8 }}
+                                    onError={(e) => (e.currentTarget.src = placeholder)}
+                                />
+                            );
+
                             return {
                                 "#": (page - 1) * limit + i + 1,
                                 icon: iconEl,
@@ -339,6 +368,11 @@ const CategoriesPage = () => {
                                 featured: c.isFeatured
                                     ? "<span class='bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm'>Yes</span>"
                                     : "<span class='bg-warning-focus text-warning-main px-24 py-4 rounded-pill fw-medium text-sm'>No</span>",
+                                onSale: c.isOnSale
+                                    ? "<span class='bg-success-focus text-success-main px-24 py-4 rounded-pill fw-medium text-sm'>Yes</span>"
+                                    : "<span class='bg-warning-focus text-warning-main px-24 py-4 rounded-pill fw-medium text-sm'>No</span>",
+                                tab: c.tabCategory || "-",
+                                banner: bannerEl,
                                 id: c._id, // include for edit context
                             };
                         })}
@@ -534,6 +568,30 @@ const CategoriesPage = () => {
                                                     </label>
                                                 </div>
                                             </div>
+
+                                            <div className="mb-3">
+                                                <div className="form-switch switch-purple d-flex align-items-center gap-3">
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="checkbox"
+                                                        role="switch"
+                                                        id="category-onsale-switch"
+                                                        checked={!!form.isOnSale}
+                                                        onChange={(e) =>
+                                                            dispatch(
+                                                                setFormField({ field: "isOnSale", value: e.target.checked })
+                                                            )
+                                                        }
+                                                    />
+                                                    <label
+                                                        className="form-check-label line-height-1 fw-medium text-secondary-light"
+                                                        htmlFor="category-onsale-switch"
+                                                    >
+                                                        Is On Sale
+                                                    </label>
+                                                </div>
+                                            </div>
+
                                         </div>
 
                                         {/* Right Column */}
@@ -564,6 +622,60 @@ const CategoriesPage = () => {
                                                         />
                                                         <div className="small text-muted mt-1">Image Preview</div>
                                                     </div>
+                                                )}
+                                            </div>
+
+                                            <div className="mb-3">
+                                                <label className="form-label fw-semibold">Tab Category</label>
+                                                <select
+                                                    className="form-select"
+                                                    value={form.tabCategory || ""}
+                                                    onChange={(e) =>
+                                                        dispatch(
+                                                            setFormField({ field: "tabCategory", value: e.target.value })
+                                                        )
+                                                    }
+                                                >
+                                                    <option value="">Unassigned</option>
+                                                    {tabOptions.map((tab) => (
+                                                        <option key={tab._id || tab.id} value={tab.slug || tab.name}>
+                                                            {tab.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                            </div>
+
+                                            <div className="mb-3">
+                                                <label className="form-label fw-semibold">Sale Banner Image (upload)</label>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="form-control"
+                                                    disabled={!form.isOnSale}
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0] || null;
+                                                        setBannerFile(file);
+                                                    }}
+                                                />
+                                                {(bannerFile || form.saleBanner) && (
+                                                    <div className="mt-2 text-center">
+                                                        <img
+                                                            src={bannerFile ? URL.createObjectURL(bannerFile) : resolveImageUrl(form.saleBanner)}
+                                                            alt="Banner Preview"
+                                                            style={{
+                                                                maxWidth: 180,
+                                                                maxHeight: 80,
+                                                                borderRadius: 8,
+                                                                objectFit: "cover",
+                                                            }}
+                                                            onError={(e) => (e.currentTarget.src = placeholder)}
+                                                        />
+                                                        <div className="small text-muted mt-1">Banner Preview</div>
+                                                    </div>
+                                                )}
+                                                {!form.isOnSale && (
+                                                    <div className="form-text">Enable "Is On Sale" to attach a banner</div>
                                                 )}
                                             </div>
 
