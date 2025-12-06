@@ -282,7 +282,7 @@ const CategoriesPage = () => {
     );
 
     // Image base URL and resolver for relative backend paths
-    const IMG_BASE = ("http://localhost:8000").replace(/\/$/, "");
+    const IMG_BASE = (process.env.REACT_APP_API_BASE_URL).replace(/\/$/, "");
     const placeholder = "/assets/images/user-list/user-list1.png";
     const resolveImageUrl = (p) => {
         if (!p) return placeholder;

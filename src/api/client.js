@@ -2,10 +2,11 @@ import axios from "axios";
 
 // Create Axios instance
 const apiClient = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL,
+    baseURL: process.env.REACT_APP_API_BASE_URL || 'https://g2.brandinsa.com',
     headers: {
         "Content-Type": "application/json",
     },
+    withCredentials: true,
 });
 
 /**
@@ -52,22 +53,82 @@ const getExpiresAtMs = () => {
  */
 export const checkAuthRedirect = () => {
     const token = localStorage.getItem("auth_token");
+    const refreshToken = localStorage.getItem("refresh_token");
     const expMs = getExpiresAtMs();
 
+    const currentPath = window.location.pathname;
+    const isPublicRoute = [
+        "/sign-in",
+        "/sign-up",
+        "/forgot-password",
+        "/reset-password"
+    ].includes(currentPath);
+
+    // User has valid token
     if (token && expMs && Date.now() < expMs) {
-        // Logged in → trying to visit sign-in → redirect to dashboard
-        if (window.location.pathname === "/sign-in") {
+        // Already on public route → redirect to dashboard
+        if (isPublicRoute) {
+            console.log('✅ Valid token, redirecting to dashboard');
             redirectToDashboard();
         }
-    } else {
-        // Token expired or missing → clear and redirect to sign-in
-        clearAuthStorage();
-        if (window.location.pathname !== "/sign-in") {
-            redirectToSignIn();
-        }
+        return true;
     }
+
+    // Token expired but has refresh token → try refresh
+    if (token && expMs && Date.now() >= expMs && refreshToken) {
+        console.log('🔄 Token expired, attempting refresh...');
+        attemptTokenRefresh().then(success => {
+            if (success) {
+                // Refresh successful, stay on current page
+                console.log('✅ Token refreshed successfully');
+            } else {
+                // Refresh failed, redirect to sign-in if not already there
+                if (!isPublicRoute) {
+                    console.log('❌ Refresh failed, redirecting to sign-in');
+                    redirectToSignIn();
+                }
+            }
+        });
+        return false;
+    }
+
+    // No valid token or refresh failed
+    console.log('❌ No valid authentication');
+    if (!isPublicRoute) {
+        clearAuthStorage();
+        redirectToSignIn();
+    }
+    return false;
 };
 
+// Helper function to attempt token refresh
+const attemptTokenRefresh = async () => {
+    try {
+        const refreshToken = localStorage.getItem("refresh_token");
+        if (!refreshToken) return false;
+
+        const response = await axios.post(
+            `${process.env.REACT_APP_API_BASE_URL || 'https://g2.brandinsa.com'}/api/auth/refresh-token`,
+            { refreshToken },
+            { headers: { "Content-Type": "application/json" } }
+        );
+
+        if (response.data?.accessToken) {
+            localStorage.setItem("auth_token", response.data.accessToken);
+            if (response.data.refreshToken) {
+                localStorage.setItem("refresh_token", response.data.refreshToken);
+            }
+            if (response.data.expiresAt) {
+                localStorage.setItem("expires_at", response.data.expiresAt);
+            }
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('❌ Token refresh failed:', error);
+        return false;
+    }
+};
 /**
  * REQUEST INTERCEPTOR
  */

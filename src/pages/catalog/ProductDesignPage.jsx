@@ -11,6 +11,7 @@ import categoryApi from "../../api/categoryApi";
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import {Icon} from "@iconify/react";
+import apiClient from "../../api/client";
 
 const ProductDesignPage = () => {
     // Main product state
@@ -763,6 +764,8 @@ const ProductDesignPage = () => {
 
             setCreatedProductId(createdId);
 
+            console.log("API URL:", apiClient);
+            console.log("Request URL:", `${apiClient}/product/draft`);
             // Save related data (SEO and FAQs only - pricing and variants are handled in main request)
             await createProductSeo(createdId);
             await createProductFaqs(createdId);
@@ -809,8 +812,10 @@ const ProductDesignPage = () => {
             return;
         }
 
+        console.log("API URL:", process.env.REACT_APP_API_URL);
+        console.log("Request URL:", `${process.env.REACT_APP_API_URL}/product/draft`);
         setIsSaving(true);
-        try {
+        // try {
             const fd = buildFormData();
             let productId = createdProductId;
 
@@ -831,12 +836,12 @@ const ProductDesignPage = () => {
             await fetchStockLogs(productId);
 
             toast.success("Product published successfully!");
-        } catch (error) {
-            console.error("Publish error:", error);
-            toast.error(error?.response?.data?.message || error?.message || "Publish failed");
-        } finally {
-            setIsSaving(false);
-        }
+        // } catch (error) {
+        //     console.error("Publish error:", error);
+        //     toast.error(error?.response?.data?.message || error?.message || "Publish failed");
+        // } finally {
+        //     setIsSaving(false);
+        // }
     };
 
     return (<MasterLayout>

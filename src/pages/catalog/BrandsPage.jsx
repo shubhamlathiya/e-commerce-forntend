@@ -22,7 +22,7 @@ import apiClient from "../../api/client";
 import {Icon} from "@iconify/react"; // ensure you have axios instance here
 
 // Base URL and helpers for images and website
-const IMG_BASE = ("http://localhost:8000").replace(/\/$/, "");
+const IMG_BASE = (process.env.REACT_APP_API_BASE_URL).replace(/\/$/, "");
 const placeholderImage = "/assets/images/user-list/user-list1.png";
 const resolveImageUrl = (p) => {
     if (!p) return placeholderImage;

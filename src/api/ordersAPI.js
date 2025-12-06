@@ -51,10 +51,64 @@ export const getAllAdminOrders = async (params = {}) => {
 };
 
 export const updateOrderStatus = async (id, payload) => {
-  // Expected: { status }
-  const required = only(payload || {}, ["status"]);
-  const { data } = await apiClient.put(`/api/orders/admin/${id}/status`, required);
-  return data;
+  try {
+    // Simple validation instead of 'only' function
+    if (!payload || !payload.status) {
+      throw new Error('Status is required');
+    }
+
+    // Extract only status from payload (simple version of 'only')
+    const required = { status: payload.status };
+
+    // Log request (simpler version)
+    console.log(`🔵 PUT Request: /api/orders/admin/${id}/status`);
+    console.log('Payload:', JSON.stringify(required));
+
+    // Make the request
+    const response = await apiClient.put(
+        `/api/orders/admin/${id}/status`,
+        required
+    );
+
+    // Log response
+    console.log(`✅ Response: ${response.status}`);
+    console.log('Response Data:', response.data);
+
+    return response.data;
+  } catch (err) {
+    // Enhanced error logging
+    const errorDetails = {
+      message: err.message,
+      url: err.config?.url,
+      method: err.config?.method?.toUpperCase(),
+    };
+
+    if (err.response) {
+      // Server responded with error
+      errorDetails.status = err.response.status;
+      errorDetails.data = err.response.data;
+      errorDetails.headers = err.response.headers;
+
+      console.error('❌ Server Error:', errorDetails);
+    } else if (err.request) {
+      // Request made but no response
+      errorDetails.request = err.request;
+      console.error('❌ Network Error - No Response:', errorDetails);
+    } else {
+      // Error setting up request
+      console.error('❌ Request Setup Error:', errorDetails);
+    }
+
+    // Check specifically for CORS error
+    if (err.message && err.message.includes('Network Error') && !err.response) {
+      console.error('🚨 CORS/BLOCKED: Request blocked by browser CORS policy');
+      console.error('Try: 1. Check server CORS headers');
+      console.error('     2. Try with Postman/curl to verify API works');
+      console.error('     3. Check browser console for CORS errors');
+    }
+
+    throw err;
+  }
 };
 
 export const processReturnReplacement = async (type, id, payload) => {

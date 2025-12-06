@@ -326,7 +326,7 @@ const ProductSeoPage = () => {
                                         }}
                                         onInputChange={(input) => setProductSearch(input)}
                                         formatOptionLabel={(opt) => {
-                                            const imgBase = "http://localhost:8000";
+                                            const imgBase = process.env.REACT_APP_API_BASE_URL
                                             const thumbUrl = opt.thumb
                                                 ? (String(opt.thumb).startsWith("http") ? opt.thumb : `${imgBase}${opt.thumb}`)
                                                 : "";

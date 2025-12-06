@@ -1315,7 +1315,7 @@ const ProductDetailsPage = () => {
                                                 {existingImages.map((image, index) => (
                                                     <div key={`existing-${index}`} className="position-relative">
                                                         <img
-                                                            src={`http://localhost:8000${image}`}
+                                                            src={`${process.env.REACT_APP_API_BASE_URL}${image}`}
                                                             alt={`Existing ${index}`}
                                                             style={{
                                                                 width: 60,

@@ -1,5 +1,4 @@
 import apiClient from "./client";
-import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -47,7 +46,7 @@ const productApi = {
 
   // Create new product with FormData (supports images)
   createProduct: async (formData) => {
-    const { data } = await axios.post(`${API_BASE_URL}api/catalog/products`, formData, {
+    const { data } = await apiClient.post(`${API_BASE_URL}api/catalog/products`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${getToken()}`,
@@ -59,7 +58,7 @@ const productApi = {
   // Update product with FormData (supports images)
   updateProduct: async (id, formData) => {
 
-    const { data } = await axios.patch(`${API_BASE_URL}api/catalog/products/${id}`, formData, {
+    const { data } = await apiClient.patch(`${API_BASE_URL}api/catalog/products/${id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${getToken()}`,
@@ -78,7 +77,7 @@ const productApi = {
 
   // Delete product
   deleteProduct: async (id) => {
-    const { data } = await axios.delete(`${API_BASE_URL}api/catalog/products/${id}`, {
+    const { data } = await apiClient.delete(`${API_BASE_URL}api/catalog/products/${id}`, {
       headers: {
         'Authorization': `Bearer ${getToken()}`,
       },
@@ -165,7 +164,7 @@ const productApi = {
 
   // Add images to product gallery
   addGalleryImages: async (productId, formData) => {
-    const { data } = await axios.post(`${API_BASE_URL}/api/catalog/product-gallery/${productId}`, formData, {
+    const { data } = await apiClient.post(`${API_BASE_URL}/api/catalog/product-gallery/${productId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${getToken()}`,
@@ -176,7 +175,7 @@ const productApi = {
 
   // Replace product gallery images
   replaceGallery: async (productId, formData) => {
-    const { data } = await axios.put(`${API_BASE_URL}/api/catalog/product-gallery/${productId}`, formData, {
+    const { data } = await apiClient.put(`${API_BASE_URL}/api/catalog/product-gallery/${productId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization': `Bearer ${getToken()}`,
@@ -187,7 +186,7 @@ const productApi = {
 
   // Remove specific image from gallery
   removeGalleryImage: async (productId, imageIndex) => {
-    const { data } = await axios.delete(`${API_BASE_URL}/api/catalog/product-gallery/${productId}/images/${imageIndex}`, {
+    const { data } = await apiClient.delete(`${API_BASE_URL}/api/catalog/product-gallery/${productId}/images/${imageIndex}`, {
       headers: {
         'Authorization': `Bearer ${getToken()}`,
       },
@@ -197,7 +196,7 @@ const productApi = {
 
   // Delete entire product gallery
   deleteGallery: async (productId) => {
-    const { data } = await axios.delete(`${API_BASE_URL}/api/catalog/product-gallery/${productId}`, {
+    const { data } = await apiClient.delete(`${API_BASE_URL}/api/catalog/product-gallery/${productId}`, {
       headers: {
         'Authorization': `Bearer ${getToken()}`,
       },
