@@ -307,7 +307,8 @@ const ComboOffersPage = () => {
                                                                 menuPosition="fixed"
                                                                 styles={{ menuPortal: (base) => ({ ...base, zIndex: 2000 }) }}
                                                                 formatOptionLabel={(opt) => {
-                                                                    const imgBase = "http://localhost:8000";
+                                                                    const imgBase = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
+
                                                                     const raw = opt.image || opt.thumb || opt.thumbnail;
                                                                     const thumbUrl = raw ? (String(raw).startsWith("http") ? String(raw) : `${imgBase}${raw}`) : "";
                                                                     return (

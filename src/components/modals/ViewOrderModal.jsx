@@ -57,7 +57,7 @@ export default function ViewOrderModal({ show, onClose, order, onGenerateInvoice
                       <tbody>
                         {items.map((it, idx) => {
                           const rawImg = it.image || it.thumbnail || "";
-                          const base = ("http://localhost:8000").replace(/\/$/, "");
+                          const base = ("https://g2.brandinsa.com").replace(/\/$/, "");
                           const s = String(rawImg || "");
                           const imgUrl = s
                             ? (s.startsWith("http") || s.startsWith("data:")

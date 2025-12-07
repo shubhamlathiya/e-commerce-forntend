@@ -567,7 +567,8 @@ const PricingPage = () => {
                                                 menuPosition="fixed"
                                                 styles={{menuPortal: (base) => ({...base, zIndex: 2000})}}
                                                 formatOptionLabel={(opt) => {
-                                                    const imgBase = "http://localhost:8000";
+                                                    const imgBase = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
+
                                                     const thumbUrl = opt.image || opt.thumb ? ((opt.image || opt.thumb).startsWith("http") ? (opt.image || opt.thumb) : `${imgBase}${opt.image || opt.thumb}`) : "";
                                                     return (
                                                         <div className="d-flex align-items-center gap-8">
@@ -722,7 +723,8 @@ const PricingPage = () => {
                                                 menuPosition="fixed"
                                                 styles={{menuPortal: (base) => ({...base, zIndex: 2000})}}
                                                 formatOptionLabel={(opt) => {
-                                                    const imgBase = "http://localhost:8000";
+                                                    const imgBase = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
+
                                                     const thumbUrl = opt.image || opt.thumb ? ((opt.image || opt.thumb).startsWith("http") ? (opt.image || opt.thumb) : `${imgBase}${opt.image || opt.thumb}`) : "";
                                                     return (
                                                         <div className="d-flex align-items-center gap-8">
@@ -847,7 +849,7 @@ const PricingPage = () => {
                                                 menuPosition="fixed"
                                                 styles={{menuPortal: (base) => ({...base, zIndex: 2000})}}
                                                 formatOptionLabel={(opt) => {
-                                                    const imgBase = "http://localhost:8000";
+                                                    const imgBase = (process.env.REACT_APP_API_BASE_URL || "http://localhost:8000").replace(/\/$/, "");
                                                     const thumbUrl = opt.image || opt.thumb ? ((opt.image || opt.thumb).startsWith("http") ? (opt.image || opt.thumb) : `${imgBase}${opt.image || opt.thumb}`) : "";
                                                     return (
                                                         <div className="d-flex align-items-center gap-8">

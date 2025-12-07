@@ -1257,7 +1257,7 @@ const ProductDetailsPage = () => {
                                             {(thumbPreview || existingThumbnail) && (
                                                 <div className="d-flex align-items-center gap-2 mt-2">
                                                     <img
-                                                        src={thumbPreview || `http://localhost:8000${existingThumbnail}`}
+                                                        src={thumbPreview || `https://g2.brandinsa.com${existingThumbnail}`}
                                                         alt="Thumbnail preview"
                                                         style={{
                                                             width: 80,

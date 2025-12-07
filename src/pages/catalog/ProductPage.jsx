@@ -109,12 +109,12 @@ const ProductPage = () => {
                     if (!path) return "assets/images/user-list/user-list1.png";
                     return path.startsWith("http")
                         ? path
-                        : `http://localhost:8000${path.startsWith("/") ? path : `/${path}`}`;
+                        : `https://g2.brandinsa.com${path.startsWith("/") ? path : `/${path}`}`;
                 };
 
                 const thumbnail = product?.thumbnail ? (
                     <img
-                        src={`http://localhost:8000${product.thumbnail}`}
+                        src={`https://g2.brandinsa.com${product.thumbnail}`}
                         alt={product?.title || "Product"}
                         style={{
                             width: "50px",
